@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kaleab Zelalem | Developer Portfolio</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Roboto+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo">
+                <a href="#home">
+                    <div class="logo-icon">KZ</div>
+                    <span class="logo-text">&lt;KZ/&gt;</span>
+                </a>
+            </div>
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="#home" class="active">.home()</a></li>
+                    <li><a href="#projects">.projects()</a></li>
+                    <li><a href="#skills">.skills()</a></li>
+                    <li><a href="#about">.about()</a></li>
+                    <li><a href="#contact">.contact()</a></li>
+                </ul>
+                <div class="theme-toggle">
+                    <i class="fas fa-sun"></i>
+                </div>
+                <div class="hamburger">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <section id="home" class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-text">
+                    <h1><span class="bracket">&lt;</span>Kaleab<br>Zelalem<span class="bracket">/&gt;</span></h1>
+                    <h2>Full Stack Developer</h2>
+                    <p>Full Stack Developer passionate about creating end-to-end web solutions. Experienced in building responsive front-end interfaces with React and robust back-end systems using Node.js. Committed to delivering high-quality, user-centric applications with clean code and modern best practices.</p>
+                    <div class="social-links">
+                        <a href="https://github.com/kaleab0794" class="social-link"><i class="fab fa-github"></i></a>
+                        <a href="https://www.linkedin.com/in/kaleab-zelalem-297b091b8/" class="social-link"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="https://x.com/Kaleab0794" class="social-link"><i class="fab fa-twitter"></i></a>
+                    </div>
+                </div>
+                <div class="hero-image">
+                    <div class="image-container">
+                        <img src="image.jpg" alt="Kaleab Zelalem">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="projects" class="projects">
+        <div class="container">
+            <div class="section-header">
+                <h2>.projects()</h2>
+                <div class="underline"></div>
+            </div>
+            <div class="project-filters">
+                <button class="filter-btn active" data-filter="all">All</button>
+                <button class="filter-btn" data-filter="web">Web Development</button>
+                <button class="filter-btn" data-filter="mobile">Mobile Apps</button>
+                <button class="filter-btn" data-filter="algorithm">Algorithms</button>
+            </div>
+            <div class="projects-grid">
+                <div class="project-item" data-category="web">
+                    <div class="project-img">
+                        <img src="ecommerce.png" alt="E-commerce Website">
+                    </div>
+                    <div class="project-info">
+                        <h3>E-commerce Platform</h3>
+                        <p>A full-stack e-commerce website with user authentication, product catalog, and payment integration.</p>
+                        <div class="project-tech">
+                            <span>React</span>
+                            <span>Node.js</span>
+                            <span>MongoDB</span>
+                        </div>
+                        <div class="project-links">
+                            <a href="ecommerce-coming-soon.html" class="btn btn-sm">View Demo</a>
+                            <a href="ecommerce-coming-soon.html" class="btn btn-sm btn-secondary">Source Code</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="project-item" data-category="mobile">
+                    <div class="project-img">
+                        <img src="fitness app.jpg" alt="Fitness Tracker App">
+                    </div>
+                    <div class="project-info">
+                        <h3>Fitness Tracker App</h3>
+                        <p>A mobile application that helps users track their workouts, set goals, and monitor progress.</p>
+                        <div class="project-tech">
+                            <span>Java</span>
+                            <span>Android SDK</span>
+                            <span>Firebase</span>
+                        </div>
+                        <div class="project-links">
+                            <a href="fitness-coming-soon.html" class="btn btn-sm">View Demo</a>
+                            <a href="fitness-coming-soon.html" class="btn btn-sm btn-secondary">Source Code</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="project-item" data-category="algorithm">
+                    <div class="project-img">
+                        <img src="path3.png" alt="Pathfinding Visualizer">
+                    </div>
+                    <div class="project-info">
+                        <h3>Pathfinding Algorithm Visualizer</h3>
+                        <p>An interactive tool that visualizes various pathfinding algorithms like Dijkstra's, A*, and BFS.</p>
+                        <div class="project-tech">
+                            <span>JavaScript</span>
+                            <span>HTML5 Canvas</span>
+                            <span>CSS3</span>
+                        </div>
+                        <div class="project-links">
+                            <a href="Pathfinding Algorithm Visualizer.html" class="btn btn-sm">View Demo</a>
+                            <a href="pathfinding-coming-soon.html" class="btn btn-sm btn-secondary">Source Code</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="skills" class="skills">
+        <div class="container">
+            <div class="section-header">
+                <h2>.skills()</h2>
+                <div class="underline"></div>
+            </div>
+            <div class="skills-content">
+                <div class="skill-category">
+                    <h3>Programming Languages</h3>
+                    <div class="skills-grid">
+                        <div class="skill-item">
+                            <div class="skill-icon">
+                                <i class="fab fa-java"></i>
+                            </div>
+                            <h4>Java</h4>
+                            <div class="skill-bar">
+                                <div class="skill-level" style="width: 70%"></div>
+                            </div>
+                        </div>
+                        <div class="skill-item">
+                            <div class="skill-icon">
+                                <i class="fab fa-python"></i>
+                            </div>
+                            <h4>Python</h4>
+                            <div class="skill-bar">
+                                <div class="skill-level" style="width: 70%"></div>
+                            </div>
+                        </div>
+                        <div class="skill-item">
+                            <div class="skill-icon">
+                                <i class="fab fa-js"></i>
+                            </div>
+                            <h4>JavaScript</h4>
+                            <div class="skill-bar">
+                                <div class="skill-level" style="width: 70%"></div>
+                            </div>
+                        </div>
+                        <div class="skill-item">
+                            <div class="skill-icon">
+                                <i class="fas fa-code"></i>
+                            </div>
+                            <h4>C++</h4>
+                            <div class="skill-bar">
+                                <div class="skill-level" style="width: 85%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="skill-category">
+                    <h3>Web Development</h3>
+                    <div class="skills-grid">
+                        <div class="skill-item">
+                            <div class="skill-icon">
+                                <i class="fab fa-html5"></i>
+                            </div>
+                            <h4>HTML5</h4>
+                            <div class="skill-bar">
+                                <div class="skill-level" style="width: 90%"></div>
+                            </div>
+                        </div>
+                        <div class="skill-item">
+                            <div class="skill-icon">
+                                <i class="fab fa-css3-alt"></i>
+                            </div>
+                            <h4>CSS3</h4>
+                            <div class="skill-bar">
+                                <div class="skill-level" style="width: 90%"></div>
+                            </div>
+                        </div>
+                        <div class="skill-item">
+                            <div class="skill-icon">
+                                <i class="fab fa-react"></i>
+                            </div>
+                            <h4>React</h4>
+                            <div class="skill-bar">
+                                <div class="skill-level" style="width: 70%"></div>
+                            </div>
+                        </div>
+                        <div class="skill-item">
+                            <div class="skill-icon">
+                                <i class="fab fa-node-js"></i>
+                            </div>
+                            <h4>Node.js</h4>
+                            <div class="skill-bar">
+                                <div class="skill-level" style="width: 70%"></div>
+                            </div>
+                        </div>
+                        <div class="skill-item">
+                            <div class="skill-icon">
+                                <i class="fab fa-php"></i>
+                            </div>
+                            <h4>PHP</h4>
+                            <div class="skill-bar">
+                                <div class="skill-level" style="width: 90%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="about" class="about">
+        <div class="container">
+            <div class="section-header">
+                <h2>.about()</h2>
+                <div class="underline"></div>
+            </div>
+            <div class="about-content">
+                <div class="about-image">
+                    <img src="image.jpg" alt="Kaleab Zelalem">
+                </div>
+                <div class="about-text">
+                    <h3>Who am I?</h3>
+                    <p>I am Kaleab Zelalem, a Computer Science graduate from St. Mary's University with a GPA of 3.0/4.0. I'm passionate about software development, data structures, algorithms, and creating efficient solutions to complex problems.</p>
+                    <p>My journey in computer science began with a curiosity about how technology works and has evolved into a deep passion for creating impactful software solutions. I enjoy learning new technologies and applying them to solve real-world problems.</p>
+                    
+                    <div class="education">
+                        <h3>Education</h3>
+                        <div class="education-item">
+                            <h4>Bachelor of Science in Computer Science</h4>
+                            <p>St. Mary's University, Ethiopia</p>
+                            <p>GPA: 3.0/4.0</p>
+                            <p>2021 - 2025</p>
+                        </div>
+                    </div>
+                    
+                    </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact" class="contact">
+        <div class="container">
+            <div class="section-header">
+                <h2>.contact()</h2>
+                <div class="underline"></div>
+            </div>
+            <div class="contact-content">
+                <div class="contact-info">
+                    <h3>Contact Information</h3>
+                    <p>Feel free to reach out to me for job opportunities, collaborations, or just to say hello!</p>
+                    <div class="contact-details">
+                        <div class="contact-item">
+                            <i class="fas fa-envelope"></i>
+                            <p>kaleab.lala123@gmail.com.</p>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-phone"></i>
+                            <p>+251 93 209 7054</p>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <p>Addis Ababa, Ethiopia</p>
+                        </div>
+                    </div>
+                    <div class="social-links">
+                        <a href="https://github.com/kaleab0794" class="social-link"><i class="fab fa-github"></i></a>
+                        <a href="https://www.linkedin.com/in/kaleab-zelalem-297b091b8/" class="social-link"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="https://x.com/Kaleab0794" class="social-link"><i class="fab fa-twitter"></i></a>
+                        <a href="https://www.instagram.com/kaleab.ethiopia/" class="social-link"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+                <div class="contact-form">
+                    <h3>Send Me a Message</h3>
+                    <form id="contact-form">
+                        <div class="form-group">
+                            <input type="text" id="name" name="name" placeholder="Your Name" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="email" id="email" name="email" placeholder="Your Email" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="text" id="subject" name="subject" placeholder="Subject" required>
+                        </div>
+                        <div class="form-group">
+                            <textarea id="message" name="message" placeholder="Your Message" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Send Message</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <h3>Kaleab Zelalem</h3>
+                    <p>Full Stack Developer</p>
+                </div>
+                <div class="footer-links">
+                    <ul>
+                        <li><a href="#home">.home()</a></li>
+                        <li><a href="#projects">.projects()</a></li>
+                        <li><a href="#skills">.skills()</a></li>
+                        <li><a href="#about">.about()</a></li>
+                        <li><a href="#contact">.contact()</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Kaleab Zelalem. All Rights Reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <a href="#home" class="back-to-top">
+        <i class="fas fa-arrow-up"></i>
+    </a>
+
+    <script src="script.js"></script>
+</body>
+</html>

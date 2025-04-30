@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pathfinding Visualizer</title>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            height: 100vh;
+            background-color: #1a202c;
+            font-family: 'Press Start 2P', monospace;
+            overflow-x: hidden;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            padding-top: 20px;
+            box-sizing: border-box;
+        }
+
+        #title-container {
+            text-align: center;
+            margin-bottom: 20px;
+            width: 100%;
+        }
+
+        #main-title {
+            font-size: 2.5rem;
+            color: #ffdb58;
+            margin-bottom: 10px;
+            text-shadow: 0 0 8px rgba(255, 219, 88, 0.8);
+        }
+
+        #sub-title {
+            font-size: 1rem;
+            color: #cbd5e0;
+            font-weight: 400;
+            margin-top: 0;
+        }
+
+        #canvas {
+            background-color: #2d3748;
+            border: 2px solid #4a5568;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+            margin-bottom: 20px;
+            width: 95%;
+            max-width: 800px;
+            height: auto;
+            aspect-ratio: 8 / 6;
+            cursor: pointer;
+        }
+
+        #controls {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            width: 95%;
+            max-width: 800px;
+        }
+
+        .btn {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            background-color: #4a5568;
+            color: #fff;
+            font-family: 'Press Start 2P', monospace;
+            cursor: pointer;
+            font-size: 0.7rem;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn:hover {
+            background-color: #718096;
+        }
+
+        .btn.active {
+            background-color: #f56565;
+        }
+
+        #message-box {
+            background-color: #edf2f7;
+            color: #1a202c;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            border: 1px solid #cbd5e0;
+            text-align: center;
+            width: 95%;
+            max-width: 800px;
+            font-size: 0.8rem;
+        }
+
+        @media (max-width: 768px) {
+            #main-title {
+                font-size: 2rem;
+            }
+            #sub-title {
+                font-size: 0.8rem;
+            }
+            .container {
+                padding-top: 10px;
+            }
+            #canvas {
+                margin-bottom: 10px;
+            }
+            #controls {
+                gap: 8px;
+            }
+            .btn {
+                font-size: 0.6rem;
+                padding: 8px 12px;
+            }
+            #message-box {
+                font-size: 0.7rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            #main-title {
+                font-size: 1.5rem;
+            }
+            #sub-title {
+                font-size: 0.7rem;
+            }
+            .btn {
+                font-size: 0.5rem;
+                padding: 6px 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="title-container">
+            <h1 id="main-title">Pathfinding Algorithm Visualizer</h1>
+            <p id="sub-title">Visualize and Explore Pathfinding Algorithms</p>
+        </div>
+        <canvas id="canvas"></canvas>
+        <div id="controls">
+            <button class="btn algorithm-btn" data-algorithm="dijkstra">Dijkstra</button>
+            <button class="btn algorithm-btn" data-algorithm="a-star">A*</button>
+            <button class="btn algorithm-btn" data-algorithm="bfs">BFS</button>
+            <button class="btn algorithm-btn" data-algorithm="dfs">DFS</button>
+            <button class="btn node-btn" data-node="start">Start Node</button>
+            <button class="btn node-btn" data-node="end">End Node</button>
+             <button class="btn node-btn" data-node="wall">Wall Node</button>
+            <button class="btn clear-btn">Clear Board</button>
+            <button class="btn clear-path-btn">Clear Path</button>
+            <button class="btn visualize-btn">Visualize</button>
+        </div>
+        <div id="message-box">Click on the canvas to add start, end, and wall nodes. Select an algorithm and then click "Visualize".</div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        const controls = document.getElementById('controls');
+        const messageBox = document.getElementById('message-box');
+
+        const gridSize = 20;
+        let grid = [];
+        let startNodes = []; // Use arrays for multiple start/end
+        let endNodes = [];
+        let selectedAlgorithm = null;
+        let selectedNode = 'start';
+        let isDrawingWall = false;
+
+        function resizeCanvas() {
+            const container = document.querySelector('.container');
+            const maxWidth = Math.min(container.clientWidth * 0.95, 800);
+            const aspectRatio = 8 / 6;
+
+            let width = maxWidth;
+            let height = maxWidth / aspectRatio;
+
+            canvas.width = width;
+            canvas.height = height;
+            initializeGrid();
+            drawGrid();
+        }
+
+        function initializeGrid() {
+            const numRows = Math.floor(canvas.height / gridSize);
+            const numCols = Math.floor(canvas.width / gridSize);
+            grid = [];
+            for (let i = 0; i < numRows; i++) {
+                grid[i] = [];
+                for (let j = 0; j < numCols; j++) {
+                    grid[i][j] = {
+                        row: i,
+                        col: j,
+                        isStart: false,
+                        isEnd: false,
+                        isWall: false,
+                        isVisited: false,
+                        isPath: false,
+                        distance: Infinity,
+                        previous: null,
+                    };
+                }
+            }
+            startNodes = [];
+            endNodes = [];
+        }
+
+        function drawGrid() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            const numRows = grid.length;
+            const numCols = grid[0].length;
+            for (let i = 0; i < numRows; i++) {
+                for (let j = 0; j < numCols; j++) {
+                    const node = grid[i][j];
+                    let color = '#2d3748';
+                    if (node.isStart) {
+                        color = '#48bb78';
+                    } else if (node.isEnd) {
+                        color = '#f56565';
+                    } else if (node.isWall) {
+                        color = '#2d3748';
+                    } else if (node.isVisited) {
+                        color = '#a0aec0';
+                    } else if (node.isPath) {
+                        color = '#3182ce';
+                    }
+                    ctx.fillStyle = color;
+                    ctx.fillRect(j * gridSize, i * gridSize, gridSize, gridSize);
+                    ctx.strokeStyle = '#4a5568';
+                    ctx.strokeRect(j * gridSize, i * gridSize, gridSize, gridSize);
+                }
+            }
+        }
+
+        function getNode(row, col) {
+            if (row >= 0 && row < grid.length && col >= 0 && col < grid[0].length) {
+                return grid[row][col];
+            }
+            return null;
+        }
+
+        function getNeighbors(node) {
+            const neighbors = [];
+            const { row, col } = node;
+            const numRows = grid.length;
+            const numCols = grid[0].length;
+
+            // Check up
+            if (row > 0) {
+                neighbors.push(grid[row - 1][col]);
+            }
+            // Check down
+            if (row < numRows - 1) {
+                neighbors.push(grid[row + 1][col]);
+            }
+            // Check left
+            if (col > 0) {
+                neighbors.push(grid[row][col - 1]);
+            }
+            // Check right
+            if (col < numCols - 1) {
+                neighbors.push(grid[row][col + 1]);
+            }
+
+            return neighbors;
+        }
+
+        function visualizePath() {
+            if (!selectedAlgorithm) {
+                showMessage('Please select an algorithm.');
+                return;
+            }
+
+            if (startNodes.length === 0 || endNodes.length === 0) {
+                showMessage('Please select start and end nodes.');
+                return;
+            }
+
+            clearPath();
+
+            switch (selectedAlgorithm) {
+                case 'dijkstra':
+                    dijkstra();
+                    break;
+                case 'a-star':
+                    aStar();
+                    break;
+                case 'bfs':
+                    bfs();
+                    break;
+                case 'dfs':
+                    dfs();
+                    break;
+            }
+        }
+
+        function dijkstra() {
+            const visitedNodesInOrder = [];
+            for (let i = 0; i < grid.length; i++) {
+                for (let j = 0; j < grid[i].length; j++) {
+                    grid[i][j].isVisited = false;
+                    grid[i][j].distance = Infinity;
+                    grid[i][j].previous = null;
+                }
+            }
+
+            for (const startNode of startNodes) {
+                startNode.distance = 0;
+                const unvisitedNodes = [];
+                for (let i = 0; i < grid.length; i++) {
+                    for (let j = 0; j < grid[i].length; j++) {
+                        unvisitedNodes.push(grid[i][j]);
+                    }
+                }
+
+                while (unvisitedNodes.length > 0) {
+                    unvisitedNodes.sort((a, b) => a.distance - b.distance);
+                    const currentNode = unvisitedNodes.shift();
+
+                    if (currentNode.isWall) {
+                        continue;
+                    }
+                    if (currentNode.distance === Infinity) {
+                        return;
+                    }
+
+                    currentNode.isVisited = true;
+                    visitedNodesInOrder.push(currentNode);
+
+                    if (endNodes.includes(currentNode)) {
+                        break;
+                    }
+
+                    const neighbors = getNeighbors(currentNode);
+                    for (const neighbor of neighbors) {
+                        if (!neighbor.isVisited && !neighbor.isWall) {
+                            const newDistance = currentNode.distance + 1;
+                            if (newDistance < neighbor.distance) {
+                                neighbor.distance = newDistance;
+                                neighbor.previous = currentNode;
+                            }
+                        }
+                    }
+                }
+            }
+            animatePath(visitedNodesInOrder, getShortestPath());
+        }
+
+        function aStar() {
+            const visitedNodesInOrder = [];
+            for (let i = 0; i < grid.length; i++) {
+                for (let j = 0; j < grid[i].length; j++) {
+                    grid[i][j].isVisited = false;
+                    grid[i][j].distance = Infinity;
+                    grid[i][j].previous = null;
+                }
+            }
+
+            for (const startNode of startNodes) {
+                startNode.distance = 0;
+                const unvisitedNodes = [];
+                for (let i = 0; i < grid.length; i++) {
+                    for (let j = 0; j < grid[i].length; j++) {
+                        unvisitedNodes.push(grid[i][j]);
+                    }
+                }
+
+                while (unvisitedNodes.length > 0) {
+                    unvisitedNodes.sort((a, b) => (a.distance + heuristic(a, endNodes[0])) - (b.distance + heuristic(b, endNodes[0]))); // Use heuristic
+                    const currentNode = unvisitedNodes.shift();
+
+                    if (currentNode.isWall) {
+                        continue;
+                    }
+                    if (currentNode.distance === Infinity) {
+                        return;
+                    }
+
+                    currentNode.isVisited = true;
+                    visitedNodesInOrder.push(currentNode);
+
+                    if (endNodes.includes(currentNode)) {
+                        break;
+                    }
+
+                    const neighbors = getNeighbors(currentNode);
+                    for (const neighbor of neighbors) {
+                        if (!neighbor.isVisited && !neighbor.isWall) {
+                            const newDistance = currentNode.distance + 1;
+                            if (newDistance < neighbor.distance) {
+                                neighbor.distance = newDistance;
+                                neighbor.previous = currentNode;
+                            }
+                        }
+                    }
+                }
+            }
+            animatePath(visitedNodesInOrder, getShortestPath());
+        }
+
+        function bfs() {
+            const visitedNodesInOrder = [];
+             for (let i = 0; i < grid.length; i++) {
+                for (let j = 0; j < grid[i].length; j++) {
+                    grid[i][j].isVisited = false;
+                    grid[i][j].distance = Infinity;
+                    grid[i][j].previous = null;
+                }
+            }
+
+            for (const startNode of startNodes) {
+                startNode.distance = 0;
+                const queue = [startNode];
+
+                while (queue.length > 0) {
+                    const currentNode = queue.shift();
+
+                    if (currentNode.isWall) {
+                        continue;
+                    }
+
+                    currentNode.isVisited = true;
+                    visitedNodesInOrder.push(currentNode);
+
+                    if (endNodes.includes(currentNode)) {
+                        break;
+                    }
+
+                    const neighbors = getNeighbors(currentNode);
+                    for (const neighbor of neighbors) {
+                        if (!neighbor.isVisited && !neighbor.isWall) {
+                            neighbor.isVisited = true;
+                            neighbor.distance = currentNode.distance + 1;
+                            neighbor.previous = currentNode;
+                            queue.push(neighbor);
+                        }
+                    }
+                }
+            }
+            animatePath(visitedNodesInOrder, getShortestPath());
+        }
+
+        function dfs() {
+            const visitedNodesInOrder = [];
+            for (let i = 0; i < grid.length; i++) {
+                for (let j = 0; j < grid[i].length; j++) {
+                    grid[i][j].isVisited = false;
+                    grid[i][j].distance = Infinity;
+                    grid[i][j].previous = null;
+                }
+            }
+
+           for (const startNode of startNodes) {
+                const stack = [startNode];
+
+                while (stack.length > 0) {
+                    const currentNode = stack.pop();
+
+                    if (currentNode.isWall) {
+                        continue;
+                    }
+
+                    currentNode.isVisited = true;
+                    visitedNodesInOrder.push(currentNode);
+
+                    if (endNodes.includes(currentNode)) {
+                        break;
+                    }
+
+                    const neighbors = getNeighbors(currentNode);
+                    for (const neighbor of neighbors) {
+                        if (!neighbor.isVisited && !neighbor.isWall) {
+                            neighbor.isVisited = true;
+                            neighbor.distance = currentNode.distance + 1;
+                            neighbor.previous = currentNode;
+                            stack.push(neighbor);
+                        }
+                    }
+                }
+           }
+            animatePath(visitedNodesInOrder, getShortestPath());
+        }
+
+        function getShortestPath() {
+            let shortestPath = [];
+            let closestEndNode = null;
+            let minDistance = Infinity;
+
+            for (const endNode of endNodes) {
+                if (endNode.distance < minDistance) {
+                    minDistance = endNode.distance;
+                    closestEndNode = endNode;
+                }
+            }
+
+            let current = closestEndNode;
+            while (current && !startNodes.includes(current)) {
+                shortestPath.unshift(current);
+                current = current.previous;
+            }
+            if (startNodes.length > 0) {
+                shortestPath.unshift(startNodes[0]);
+            }
+            return shortestPath;
+        }
+
+        function animatePath(visitedNodes, shortestPath) {
+            for (let i = 0; i < visitedNodes.length; i++) {
+                setTimeout(() => {
+                    visitedNodes[i].isVisited = true;
+                    drawGrid();
+                    if (i === visitedNodes.length - 1) {
+                        animateShortestPath(shortestPath);
+                    }
+                }, 10 * i);
+            }
+        }
+
+        function animateShortestPath(shortestPath) {
+            for (let i = 0; i < shortestPath.length; i++) {
+                setTimeout(() => {
+                    shortestPath[i].isPath = true;
+                    drawGrid();
+                }, 50 * i);
+            }
+        }
+
+        function clearBoard() {
+            initializeGrid();
+            drawGrid();
+            showMessage('Board cleared. Select nodes and an algorithm to visualize.');
+        }
+
+        function clearPath() {
+            for (let i = 0; i < grid.length; i++) {
+                for (let j = 0; j < grid[i].length; j++) {
+                    grid[i][j].isVisited = false;
+                    grid[i][j].isPath = false;
+                    grid[i][j].distance = Infinity;
+                    grid[i][j].previous = null;
+                }
+            }
+            drawGrid();
+        }
+
+        function handleCanvasClick(event) {
+            const rect = canvas.getBoundingClientRect();
+            const x = event.clientX - rect.left;
+            const y = event.clientY - rect.top;
+            const col = Math.floor(x / gridSize);
+            const row = Math.floor(y / gridSize);
+
+            if (row < 0 || row >= grid.length || col < 0 || col >= grid[0].length) {
+                return;
+            }
+
+            const node = grid[row][col];
+
+            if (selectedNode === 'start') {
+                if (!node.isStart) { //prevent multiple start
+                    if (startNodes.length > 0) {
+                         for(let start of startNodes){
+                            start.isStart = false;
+                         }
+                        startNodes = [];
+                    }
+                    node.isStart = true;
+                    node.isWall = false;
+                    startNodes.push(node);
+                    showMessage('Start node placed.');
+                }
+
+            } else if (selectedNode === 'end') {
+                if (!node.isEnd) {
+                    if (endNodes.length > 0) {
+                        for(let end of endNodes){
+                             end.isEnd = false;
+                        }
+                        endNodes = [];
+                    }
+                    node.isEnd = true;
+                    node.isWall = false;
+                    endNodes.push(node);
+                    showMessage('End node placed.');
+                }
+            } else if (selectedNode === 'wall') {
+                if (!node.isStart && !node.isEnd) {
+                    node.isWall = !node.isWall;
+                    showMessage(node.isWall ? 'Wall node added.' : 'Wall node removed.');
+                }
+            }
+            drawGrid();
+        }
+
+
+
+        function handleAlgorithmSelect(algorithm) {
+            selectedAlgorithm = algorithm;
+            document.querySelectorAll('.algorithm-btn').forEach(button => {
+                button.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            showMessage(`Algorithm selected: ${algorithm.toUpperCase()}.`);
+        }
+
+        function handleNodeSelect(nodeType) {
+            selectedNode = nodeType;
+            document.querySelectorAll('.node-btn').forEach(button => {
+                button.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            showMessage(`Selected node type: ${nodeType}.`);
+        }
+
+        function showMessage(message) {
+            messageBox.textContent = message;
+        }
+
+        function heuristic(nodeA, nodeB) {  // Manhattan distance
+            return Math.abs(nodeA.row - nodeB.row) + Math.abs(nodeA.col - nodeB.col);
+        }
+
+        // Event Listeners
+        canvas.addEventListener('click', handleCanvasClick);
+        canvas.addEventListener('mousedown', (event) => {
+            if (selectedNode === 'wall') {
+                isDrawingWall = true;
+                handleCanvasClick(event);
+            }
+        });
+
+        canvas.addEventListener('mouseup', () => {
+            isDrawingWall = false;
+        });
+
+        canvas.addEventListener('mousemove', (event) => {
+            if (isDrawingWall) {
+                handleCanvasClick(event);
+            }
+        });
+
+        controls.addEventListener('click', (event) => {
+            if (event.target.classList.contains('algorithm-btn')) {
+                handleAlgorithmSelect(event.target.dataset.algorithm);
+            } else if (event.target.classList.contains('node-btn')) {
+                handleNodeSelect(event.target.dataset.node);
+            } else if (event.target.classList.contains('clear-btn')) {
+                clearBoard();
+            } else if (event.target.classList.contains('clear-path-btn')) {
+                clearPath();
+            } else if (event.target.classList.contains('visualize-btn')) {
+                visualizePath();
+            }
+        });
+
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+        handleNodeSelect('start');
+
+    </script>
+</body>
+</html>
